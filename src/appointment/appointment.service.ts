@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PatientService } from '../patient/patient.service';
 import { Appointment } from './appointment.model';
+import {
+  APPOINTMENT_REPOSITORY_TOKEN,
+  AppointmentRepository,
+} from './repository/appointment.repository';
 
-type AppointmentInput = {
+export type AppointmentInput = {
   startDate: Date;
   endDate: Date;
   patientId: string;
@@ -10,9 +14,15 @@ type AppointmentInput = {
 
 @Injectable()
 export class AppointmentService {
-  constructor(private readonly patientService: PatientService) {}
+  constructor(
+    private readonly patientService: PatientService,
+    @Inject(APPOINTMENT_REPOSITORY_TOKEN)
+    private readonly appointmentRepository: AppointmentRepository,
+  ) {}
 
-  public scheduleAppointment(appointmentInput: AppointmentInput): Appointment {
+  public async scheduleAppointment(
+    appointmentInput: AppointmentInput,
+  ): Promise<Appointment> {
     if (appointmentInput.endDate <= appointmentInput.startDate) {
       throw new Error("appointment's endTime should be after startTime");
     }
@@ -36,10 +46,14 @@ export class AppointmentService {
       throw new Error('Patient not found');
     }
 
-    const appointment = {
-      ...appointmentInput,
-      confirmed: false,
-    };
+    const appointment = Appointment.create({
+      startDate: appointmentInput.startDate,
+      endDate: appointmentInput.endDate,
+      patientId: appointmentInput.patientId,
+    });
+
+    await this.appointmentRepository.save(appointment);
+
     return appointment;
   }
 

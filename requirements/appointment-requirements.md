@@ -15,6 +15,7 @@ Service used to create an appointment.
 ## Success Case
 
 - ✅ An unconfirmed schedule is created upon successful appointment creation.
+- ✅ It should persist a scheduled appointment into a storage
 
 ## Failure Cases
 
