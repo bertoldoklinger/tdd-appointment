@@ -2,9 +2,7 @@
 
 Service used to create an appointment.
 
-**Service**: /schedule-appointment
-
-**Method**: POST
+**Service**: AppointmentService.scheduleAppointment()
 
 **Inputs**:
 

@@ -4,9 +4,7 @@ import { AppointmentRepository } from '../../appointment.repository';
 export class AppointmentInMemoryRepository implements AppointmentRepository {
   public appointments: Appointment[] = [];
 
-  async save(appointment: Appointment): Promise<Appointment> {
+  async save(appointment: Appointment): Promise<void> {
     this.appointments.push(appointment);
-    const newAppointment = Appointment.createFrom(appointment);
-    return newAppointment;
   }
 }
