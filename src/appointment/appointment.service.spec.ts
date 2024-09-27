@@ -88,11 +88,15 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T22:00:00Z');
     const endDate = new Date('2024-10-27T23:00:00Z');
 
+    const { id: patientId } = patientService.register({
+      name: 'John Doe',
+    });
+
     expect(() =>
       sut.scheduleAppointment({
         startDate,
         endDate,
-        patientId: '1',
+        patientId,
       }),
     ).toThrow(
       "appointment's endTime should be in the same day as start time's",
