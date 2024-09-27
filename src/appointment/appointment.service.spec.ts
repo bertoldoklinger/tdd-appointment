@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PatientModule } from 'src/patient/patient.module';
-import { PatientService } from 'src/patient/patient.service';
+import { PatientModule } from '../patient/patient.module';
+import { PatientService } from '../patient/patient.service';
 import { AppointmentService } from './appointment.service';
 
 describe('AppointmentService', () => {
@@ -103,5 +103,19 @@ describe('AppointmentService', () => {
     ).toThrow(
       "appointment's endTime should be in the same day as start time's",
     );
+  });
+
+  it('should throw an error when the patient does not exist', () => {
+    //arrange
+    const startDate = new Date('2024-09-27T09:00:00Z');
+    const endDate = new Date('2024-09-27T10:00:00Z');
+
+    expect(() =>
+      sut.scheduleAppointment({
+        startDate,
+        endDate,
+        patientId: '1',
+      }),
+    ).toThrow('Patient not found');
   });
 });

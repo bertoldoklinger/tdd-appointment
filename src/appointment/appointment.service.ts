@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PatientService } from '../patient/patient.service';
 import { Appointment } from './appointment.model';
 
 type AppointmentInput = {
@@ -9,6 +10,8 @@ type AppointmentInput = {
 
 @Injectable()
 export class AppointmentService {
+  constructor(private readonly patientService: PatientService) {}
+
   public scheduleAppointment(appointmentInput: AppointmentInput): Appointment {
     if (appointmentInput.endDate <= appointmentInput.startDate) {
       throw new Error("appointment's endTime should be after startTime");
@@ -23,6 +26,14 @@ export class AppointmentService {
       throw new Error(
         "appointment's endTime should be in the same day as start time's",
       );
+    }
+
+    const patientExists = this.patientService.doesPatientExists(
+      appointmentInput.patientId,
+    );
+
+    if (!patientExists) {
+      throw new Error('Patient not found');
     }
 
     const appointment = {
