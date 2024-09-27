@@ -42,11 +42,15 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T09:00:00Z');
 
+    const { id: patientId } = patientService.register({
+      name: 'John Doe',
+    });
+
     expect(() =>
       sut.scheduleAppointment({
         startDate,
         endDate,
-        patientId: '1',
+        patientId,
       }),
     ).toThrow("appointment's endTime should be after startTime");
   });
@@ -54,11 +58,15 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
 
+    const { id: patientId } = patientService.register({
+      name: 'John Doe',
+    });
+
     expect(() =>
       sut.scheduleAppointment({
         startDate,
         endDate,
-        patientId: '1',
+        patientId,
       }),
     ).toThrow("appointment's endTime should be after startTime");
   });
@@ -106,7 +114,6 @@ describe('AppointmentService', () => {
   });
 
   it('should throw an error when the patient does not exist', () => {
-    //arrange
     const startDate = new Date('2024-09-27T09:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
 
