@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { randomUUID } from 'crypto';
 import { PatientService } from './patient.service';
 
 describe('PatientService', () => {
@@ -23,6 +24,15 @@ describe('PatientService', () => {
         id: expect.any(String),
         name: 'Bertoldo Klinger',
       });
+    });
+  });
+  describe('doesPatientExist', () => {
+    it('should return false when no patient was registered', () => {
+      const patientId = randomUUID();
+
+      const patientAlreadyExists = sut.doesPatientExists(patientId);
+
+      expect(patientAlreadyExists).toBe(false);
     });
   });
 });

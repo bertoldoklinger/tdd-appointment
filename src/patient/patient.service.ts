@@ -18,4 +18,8 @@ export class PatientService {
       name: patientInput.name,
     };
   }
+
+  public doesPatientExists(patientId: string): boolean {
+    return false;
+  }
 }
