@@ -4,4 +4,4 @@
 [x] An appointment start and end time should be within the same day
 [x] We should be able to say when a patient exists.
 [x] We should be able to register a patient.
-[x] The patientId should be validated.
+[] The patientId should be validated.

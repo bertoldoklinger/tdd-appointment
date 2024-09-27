@@ -1,31 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { PatientModule } from 'src/patient/patient.module';
+import { PatientService } from 'src/patient/patient.service';
 import { AppointmentService } from './appointment.service';
 
 describe('AppointmentService', () => {
   let sut: AppointmentService;
+  let patientService: PatientService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PatientModule],
       providers: [AppointmentService],
     }).compile();
 
     sut = module.get<AppointmentService>(AppointmentService);
+    patientService = module.get<PatientService>(PatientService);
   });
 
   it('should schedule an unconfirmed appointment for a user on success', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
 
+    const { id: patientId } = patientService.register({
+      name: 'Bertoldo Klinger',
+    });
+
     const newAppointment = sut.scheduleAppointment({
       startDate,
       endDate,
-      patientId: '1',
+      patientId,
     });
 
     expect(newAppointment).toEqual({
       startDate,
       endDate,
-      patientId: '1',
+      patientId,
       confirmed: false,
     });
   });
