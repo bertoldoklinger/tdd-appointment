@@ -12,14 +12,20 @@ interface Patient {
 
 @Injectable()
 export class PatientService {
+  private readonly patients: Patient[] = [];
+
   public register(patientInput: PatientInput): Patient {
-    return {
+    const newPatient = {
       id: randomUUID(),
       name: patientInput.name,
     };
+
+    this.patients.push(newPatient);
+
+    return newPatient;
   }
 
   public doesPatientExists(patientId: string): boolean {
-    return false;
+    return this.patients.some((patient) => patient.id === patientId);
   }
 }

@@ -34,5 +34,18 @@ describe('PatientService', () => {
 
       expect(patientAlreadyExists).toBe(false);
     });
+    it('should return true when a patient is already registered', () => {
+      const { id: patientId } = sut.register({ name: 'Bertoldo Klinger' });
+
+      const patientAlreadyExists = sut.doesPatientExists(patientId);
+
+      expect(patientAlreadyExists).toBe(true);
+    });
+
+    it('should return different ids when called twice with the same name', () => {
+      const firstPatient = sut.register({ name: 'Bertoldo Klinger' });
+      const secondPatient = sut.register({ name: 'Bertoldo Klinger' });
+      expect(firstPatient).not.toEqual(secondPatient);
+    });
   });
 });
