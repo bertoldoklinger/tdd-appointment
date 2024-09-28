@@ -1,12 +1,19 @@
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class ScheduleAppointmentDTO {
   @IsNotEmpty()
   @IsDate()
-  startDate: string;
+  @Type(() => Date)
+  startDate: Date;
+
   @IsNotEmpty()
-  endDate: string;
+  @IsDate()
+  @Type(() => Date)
+  endDate: Date;
+
   @IsNotEmpty()
   @IsString()
+  @IsUUID()
   patientId: string;
 }
