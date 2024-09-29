@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PatientService } from '../patient/patient.service';
+
+import { PatientService } from 'src/patient/core/service/patient.service';
 import { Appointment } from './appointment.model';
 import {
   APPOINTMENT_REPOSITORY_TOKEN,

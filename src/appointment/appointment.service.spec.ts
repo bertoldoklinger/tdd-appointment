@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PatientModule } from '../patient/patient.module';
-import { PatientService } from '../patient/patient.service';
+
+import { PatientService } from 'src/patient/core/service/patient.service';
 import { AppointmentService } from './appointment.service';
 import { APPOINTMENT_REPOSITORY_TOKEN } from './repository/appointment.repository';
 import { AppointmentInMemoryRepository } from './repository/implementation/in-memory/appointment.in-memory.repository';
@@ -29,8 +30,9 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
 
-    const { id: patientId } = patientService.register({
+    const { patientId } = patientService.register({
       name: 'Bertoldo Klinger',
+      age: 18,
     });
 
     const newAppointment = await sut.scheduleAppointment({
@@ -51,8 +53,9 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T09:00:00Z');
 
-    const { id: patientId } = patientService.register({
+    const { patientId } = patientService.register({
       name: 'John Doe',
+      age: 18,
     });
 
     expect(() =>
@@ -67,8 +70,9 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
 
-    const { id: patientId } = patientService.register({
+    const { patientId } = patientService.register({
       name: 'John Doe',
+      age: 18,
     });
 
     expect(() =>
@@ -97,8 +101,9 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T22:00:00Z');
     const endDate = new Date('2024-10-27T23:00:00Z');
 
-    const { id: patientId } = patientService.register({
+    const { patientId } = patientService.register({
       name: 'John Doe',
+      age: 18,
     });
 
     expect(() =>

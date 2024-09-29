@@ -20,4 +20,4 @@ Service used to create an appointment.
 - ⛔ The end time is before the start time.
 - ⛔ The start time and end time are not within the same day.
 - ⛔ The provided patient ID is invalid.
-- ⛔ The patient does not exist.
+- ⛔ The patient does not exist.s
