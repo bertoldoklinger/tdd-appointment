@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { PatientService } from './core/service/patient.service';
 import { PatientController } from './http/controller/patient.controller';
-import { PatientInMemoryRepository } from './persistence/repository/patient.in-memory.repository';
+import { providePatientRepository } from './persistence/repository/patient.repository.provider';
 
 @Module({
-  providers: [PatientService, PatientInMemoryRepository],
+  providers: [PatientService, ...providePatientRepository()],
   controllers: [PatientController],
-  exports: [PatientService, PatientInMemoryRepository],
+  exports: [PatientService],
 })
 export class PatientModule {}

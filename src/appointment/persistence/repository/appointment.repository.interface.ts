@@ -1,4 +1,4 @@
-import { Appointment } from '../appointment.model';
+import { Appointment } from 'src/appointment/core/model/appointment.model';
 
 export interface AppointmentRepository {
   save(appointment: Appointment): Promise<void>;

@@ -18,4 +18,8 @@ export class PatientInMemoryRepository {
     if (!patient) return null;
     return patient;
   }
+
+  clear(): void {
+    this.items = [];
+  }
 }

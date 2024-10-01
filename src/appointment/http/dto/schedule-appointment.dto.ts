@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class ScheduleAppointmentDTO {
   @IsNotEmpty()
@@ -14,6 +14,5 @@ export class ScheduleAppointmentDTO {
 
   @IsNotEmpty()
   @IsString()
-  @IsUUID()
   patientId: string;
 }

@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-
-import { PatientService } from 'src/patient/core/service/patient.service';
-import { Appointment } from './appointment.model';
+import { Appointment } from 'src/appointment/core/model/appointment.model';
 import {
   APPOINTMENT_REPOSITORY_TOKEN,
   AppointmentRepository,
-} from './repository/appointment.repository';
+} from 'src/appointment/persistence/repository/appointment.repository.interface';
+
+import { PatientService } from 'src/patient/core/service/patient.service';
 
 export type AppointmentInput = {
   startDate: Date;
@@ -39,7 +39,7 @@ export class AppointmentService {
       );
     }
 
-    const patientExists = this.patientService.doesPatientExists(
+    const patientExists = await this.patientService.doesPatientExists(
       appointmentInput.patientId,
     );
 

@@ -1,5 +1,5 @@
-import { Appointment } from '../../../appointment.model';
-import { AppointmentRepository } from '../../appointment.repository';
+import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { AppointmentRepository } from '../../appointment.repository.interface';
 
 export class AppointmentInMemoryRepository implements AppointmentRepository {
   public appointments: Appointment[] = [];

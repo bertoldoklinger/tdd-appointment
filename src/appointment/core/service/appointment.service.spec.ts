@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PatientModule } from '../patient/patient.module';
 
 import { PatientService } from 'src/patient/core/service/patient.service';
 import { AppointmentService } from './appointment.service';
-import { APPOINTMENT_REPOSITORY_TOKEN } from './repository/appointment.repository';
-import { AppointmentInMemoryRepository } from './repository/implementation/in-memory/appointment.in-memory.repository';
+
+import { ConfigModule } from '@nestjs/config';
+import { provideAppointmentRepository } from 'src/appointment/persistence/repository/appointment.repository.provider';
+import { PatientModule } from 'src/patient/patient.module';
 
 describe('AppointmentService', () => {
   let sut: AppointmentService;
@@ -12,14 +13,14 @@ describe('AppointmentService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PatientModule],
-      providers: [
-        AppointmentService,
-        {
-          provide: APPOINTMENT_REPOSITORY_TOKEN,
-          useClass: AppointmentInMemoryRepository,
-        },
+      imports: [
+        PatientModule,
+        ConfigModule.forRoot({
+          isGlobal: true,
+          load: [() => ({ DATABASE_DATASOURCE: 'MEMORY' })],
+        }),
       ],
+      providers: [AppointmentService, ...provideAppointmentRepository()],
     }).compile();
 
     sut = module.get<AppointmentService>(AppointmentService);
@@ -30,7 +31,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
 
-    const { patientId } = patientService.register({
+    const { patientId } = await patientService.register({
       name: 'Bertoldo Klinger',
       age: 18,
     });
@@ -53,7 +54,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T09:00:00Z');
 
-    const { patientId } = patientService.register({
+    const { patientId } = await patientService.register({
       name: 'John Doe',
       age: 18,
     });
@@ -70,7 +71,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
 
-    const { patientId } = patientService.register({
+    const { patientId } = await patientService.register({
       name: 'John Doe',
       age: 18,
     });
@@ -101,7 +102,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T22:00:00Z');
     const endDate = new Date('2024-10-27T23:00:00Z');
 
-    const { patientId } = patientService.register({
+    const { patientId } = await patientService.register({
       name: 'John Doe',
       age: 18,
     });

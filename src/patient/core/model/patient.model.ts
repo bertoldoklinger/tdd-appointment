@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { WithOptional } from 'src/appointment/appointment.model';
+import { WithOptional } from 'src/shared/core/type/with-optional.type';
 
 export type PatientInput = {
   name: string;

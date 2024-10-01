@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 
-import { Appointment } from '../../../appointment.model';
+import { Appointment } from 'src/appointment/core/model/appointment.model';
 import { AppointmentInMemoryRepository } from './appointment.in-memory.repository';
 
 describe('AppointmentInMemoryRepository', () => {

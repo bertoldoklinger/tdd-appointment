@@ -1,7 +1,5 @@
 import { randomUUID } from 'crypto';
-
-export type WithOptional<T, K extends keyof T> = Omit<T, K> &
-  Partial<Pick<T, K>>;
+import { WithOptional } from 'src/shared/core/type/with-optional.type';
 
 export class Appointment {
   appointmentId: string;
