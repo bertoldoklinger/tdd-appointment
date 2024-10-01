@@ -6,8 +6,9 @@ import {
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
-import { Appointment } from 'src/appointment/appointment.model';
-import { AppointmentService } from 'src/appointment/appointment.service';
+
+import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { AppointmentService } from 'src/appointment/core/service/appointment.service';
 import { ScheduleAppointmentDTO } from '../dto/schedule-appointment.dto';
 
 @Controller('appointment')
