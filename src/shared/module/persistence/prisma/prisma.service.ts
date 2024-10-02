@@ -59,4 +59,23 @@ export class PrismaService
     // the shutdown.
     this.$disconnect();
   }
+
+  async cleanDatabase(this: PrismaClient) {
+    if (process.env.NODE_ENV !== 'test') return;
+    const tablenames = await this.$queryRaw<
+      Array<{ tablename: string }>
+    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+    const tables = tablenames
+      .map(({ tablename }) => tablename)
+      .filter((name) => name !== '_prisma_migrations')
+      .map((name) => `"public"."${name}"`)
+      .join(', ');
+
+    try {
+      await this.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
+    } catch (error) {
+      throw new Error(`Error cleaning database: ${error}`);
+    }
+  }
 }

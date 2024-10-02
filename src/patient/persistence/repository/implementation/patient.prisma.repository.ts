@@ -13,7 +13,7 @@ export class PatientPrismaRepository
   implements PatientRepository
 {
   private readonly model: PrismaService['patient'];
-  constructor(prismaService: PrismaService) {
+  constructor(private prismaService: PrismaService) {
     super();
     this.model = prismaService.patient;
   }
@@ -48,7 +48,7 @@ export class PatientPrismaRepository
 
   async clear(): Promise<void> {
     try {
-      await this.model.deleteMany();
+      await this.prismaService.cleanDatabase();
     } catch (error) {
       this.handleAndThrowError(error);
     }

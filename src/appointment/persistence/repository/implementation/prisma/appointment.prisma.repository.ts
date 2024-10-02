@@ -13,7 +13,7 @@ export class AppointmentPrismaRepository
   implements AppointmentRepository
 {
   private readonly model: PrismaService['appointment'];
-  constructor(prismaService: PrismaService) {
+  constructor(private prismaService: PrismaService) {
     super();
     this.model = prismaService.appointment;
   }
@@ -64,7 +64,7 @@ export class AppointmentPrismaRepository
 
   async clear(): Promise<void> {
     try {
-      await this.model.deleteMany();
+      await this.prismaService.cleanDatabase();
     } catch (error) {
       this.handleAndThrowError(error);
     }

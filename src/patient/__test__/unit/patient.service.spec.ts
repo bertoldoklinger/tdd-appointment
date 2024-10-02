@@ -20,7 +20,7 @@ describe('PatientService', () => {
           isGlobal: true,
           load: [() => ({ DATABASE_DATASOURCE: 'MEMORY' })],
         }),
-        PrismaPersistenceModule
+        PrismaPersistenceModule,
       ],
       providers: [PatientService, ...providePatientRepository()],
     }).compile();
