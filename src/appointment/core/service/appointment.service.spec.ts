@@ -6,26 +6,7 @@ import { AppointmentService } from './appointment.service';
 import { ConfigModule } from '@nestjs/config';
 import { provideAppointmentRepository } from 'src/appointment/persistence/repository/appointment.repository.provider';
 import { PatientModule } from 'src/patient/patient.module';
-
-type MakePatientFactoryParams = {
-  patientService: PatientService;
-  name?: string;
-  age?: number;
-};
-
-const AVERAGE_AGE = 25;
-const DEFAULT_NAME = 'John Doe';
-
-const makePatientFactory = async (params: MakePatientFactoryParams) => {
-  const { patientId } = await params.patientService.register({
-    name: params.name ?? DEFAULT_NAME,
-    age: params.age ?? AVERAGE_AGE,
-  });
-
-  return {
-    patientId,
-  };
-};
+import { makePatientFactory } from 'test/factory/make-patient';
 
 describe('AppointmentService', () => {
   let sut: AppointmentService;
