@@ -8,12 +8,20 @@ export class AppointmentInMemoryRepository implements AppointmentRepository {
     this.appointments.push(appointment);
   }
 
+  async findOneById(
+    appointmentId: string,
+  ): Promise<AppointmentModel | undefined> {
+    const appointmentFound = this.appointments.find(
+      (a) => a.appointmentId === appointmentId,
+    );
+    if (!appointmentFound) return undefined;
+    return appointmentFound;
+  }
+
   async confirm(
     appointment: AppointmentModel,
   ): Promise<AppointmentModel | undefined> {
-    const appointmentFound = this.appointments.find(
-      (a) => appointment.appointmentId === a.appointmentId,
-    );
+    const appointmentFound = await this.findOneById(appointment.appointmentId);
     if (!appointmentFound) return undefined;
     appointmentFound.confirmed = true;
     return appointmentFound;

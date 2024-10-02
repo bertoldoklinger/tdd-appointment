@@ -62,7 +62,12 @@ export class AppointmentService {
     return appointment;
   }
 
-  public async confirmAppointment(appointment: AppointmentModel) {
+  public async confirmAppointment(appointmentId: string) {
+    const appointment =
+      await this.appointmentRepository.findOneById(appointmentId);
+
+    if (!appointment) throw new Error('appointment not found');
+
     if (appointment.confirmed === true)
       throw new Error('appointment already confirmed');
 

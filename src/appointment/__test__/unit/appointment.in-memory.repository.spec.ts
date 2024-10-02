@@ -50,7 +50,7 @@ describe('AppointmentInMemoryRepository', () => {
     });
     await sut.save(newAppointment);
 
-    sut.confirm(newAppointment);
+    await sut.confirm(newAppointment);
 
     expect(sut.appointments.length).toBe(1);
     expect(sut.appointments[0]).toEqual({

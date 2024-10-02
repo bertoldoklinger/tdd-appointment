@@ -6,6 +6,8 @@ import {
   HttpStatus,
   InternalServerErrorException,
   NotFoundException,
+  Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 
@@ -38,6 +40,18 @@ export class AppointmentController {
       if (error instanceof InvalidDateException) {
         throw new BadRequestException(error.message);
       }
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @Patch('confirm/:appointmentId')
+  @HttpCode(HttpStatus.OK)
+  async confirm(@Param('appointmentId') appointmentId: string) {
+    try {
+      const confirmedAppointment =
+        await this.appointmentService.confirmAppointment(appointmentId);
+      return confirmedAppointment;
+    } catch (error: any) {
       throw new InternalServerErrorException(error.message);
     }
   }

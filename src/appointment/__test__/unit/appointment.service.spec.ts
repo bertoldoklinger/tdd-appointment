@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PatientService } from 'src/patient/core/service/patient.service';
 
 import { ConfigModule } from '@nestjs/config';
+import { randomUUID } from 'crypto';
 import { AppointmentService } from 'src/appointment/core/service/appointment.service';
 import { provideAppointmentRepository } from 'src/appointment/persistence/repository/appointment.repository.provider';
 import { PatientModule } from 'src/patient/patient.module';
@@ -142,7 +143,9 @@ describe('AppointmentService', () => {
       patientId,
     });
 
-    const confirmedAppointment = await sut.confirmAppointment(appointment);
+    const confirmedAppointment = await sut.confirmAppointment(
+      appointment.appointmentId,
+    );
 
     expect(confirmedAppointment).toEqual({
       appointmentId: expect.any(String),
@@ -163,10 +166,17 @@ describe('AppointmentService', () => {
       patientId,
     });
 
-    await sut.confirmAppointment(appointment);
+    await sut.confirmAppointment(appointment.appointmentId);
 
     expect(
-      async () => await sut.confirmAppointment(appointment),
+      async () => await sut.confirmAppointment(appointment.appointmentId),
     ).rejects.toThrow('appointment already confirmed');
+  });
+  it('should not confirm a unexistent appointment', async () => {
+    const appointmentId = randomUUID();
+
+    expect(
+      async () => await sut.confirmAppointment(appointmentId),
+    ).rejects.toThrow('appointment not found');
   });
 });
