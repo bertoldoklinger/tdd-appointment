@@ -67,7 +67,7 @@ describe('[E2E] Appointment', () => {
       .send({
         startDate: new Date('2024-09-27T10:00:00Z'),
         endDate: new Date('2024-09-27T11:00:00Z'),
-        patientId: patient.patientId,
+        patientId: PATIENT_ID,
       });
     expect(res.status).toBe(HttpStatus.CREATED);
     expect(res.body).toEqual({

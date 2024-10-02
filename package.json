@@ -10,7 +10,7 @@
     "db:generate": "prisma migrate dev",
     "db:migrate": "prisma db push",
     "db:setup": "pnpm db:migrate",
-    "docker:up": "docker compose -f docker-compose.test.yml up -d && sleep 1",
+    "docker:up": "docker compose up -d && sleep 1",
     "docker:down": "docker compose down",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check 'src/**/*.ts' 'test/**/*.ts' './*.{js,json}'",
@@ -27,7 +27,7 @@
     "test:unit": "jest --config ./test/jest.unit.ts",
     "test:integration": "jest --runInBand --config ./test/jest.integration.ts",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest --coverage --run-in-band",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "npm run db:migrate && jest --runInBand --config ./test/jest.e2e.ts --forceExit",
     "test:e2e:watch": "npm run db:migrate && npm run test:e2e -- --watch"
