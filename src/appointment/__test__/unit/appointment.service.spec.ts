@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto';
 import { AppointmentService } from 'src/appointment/core/service/appointment.service';
 import { provideAppointmentRepository } from 'src/appointment/persistence/repository/appointment.repository.provider';
 import { PatientModule } from 'src/patient/patient.module';
+import { PrismaPersistenceModule } from 'src/shared/module/persistence/prisma/prisma-persistence.module';
 import { makePatientFactory } from 'test/factory/make-patient';
 
 describe('AppointmentService', () => {
@@ -17,6 +18,7 @@ describe('AppointmentService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         PatientModule,
+        PrismaPersistenceModule,
         ConfigModule.forRoot({
           isGlobal: true,
           load: [() => ({ DATABASE_DATASOURCE: 'MEMORY' })],

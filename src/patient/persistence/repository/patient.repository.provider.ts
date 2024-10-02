@@ -1,33 +1,31 @@
-import { Inject, Injectable, Provider } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Injectable, Provider } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { DataSource } from 'src/shared/database/enum/data-source.enum';
+import { PrismaService } from 'src/shared/module/persistence/prisma/prisma.service';
 import { PatientInMemoryRepository } from './implementation/patient.in-memory.repository';
+import { PatientPrismaRepository } from './implementation/patient.prisma.repository';
 import { PATIENT_REPOSITORY_TOKEN } from './patient.repository.interface';
 
 export function providePatientRepository(): Provider[] {
   return [
     {
       provide: PATIENT_REPOSITORY_TOKEN,
-      useFactory: (configService: ConfigService) => {
-        const dataSource = configService.get<string>('DATABASE_DATASOURCE');
-        switch (dataSource) {
-          case DataSource.PRISMA:
-            return null;
-          case DataSource.MEMORY:
-          default:
-            return new PatientInMemoryRepository();
-        }
-      },
-      inject: [ConfigService],
+      useFactory: async (
+        dependenciesProvider: PatientRepoDependenciesProvider,
+      ) => providePatientRepositoryFactory(dependenciesProvider),
+      inject: [PatientRepoDependenciesProvider],
     },
+    PatientRepoDependenciesProvider,
   ];
 }
-export async function providePatientRepositoryFactory() {
+export async function providePatientRepositoryFactory(
+  dependenciesProvider: PatientRepoDependenciesProvider,
+) {
   await ConfigModule.envVariablesLoaded;
   switch (process.env.DATABASE_DATASOURCE) {
     case DataSource.PRISMA:
-      return null;
+      return new PatientPrismaRepository(dependenciesProvider.prismaService);
     case DataSource.MEMORY:
     default:
       return new PatientInMemoryRepository();
@@ -36,8 +34,5 @@ export async function providePatientRepositoryFactory() {
 
 @Injectable()
 export class PatientRepoDependenciesProvider {
-  constructor(
-    @Inject(PATIENT_REPOSITORY_TOKEN)
-    public prismaPatientRepository: any,
-  ) {}
+  constructor(public prismaService: PrismaService) {}
 }

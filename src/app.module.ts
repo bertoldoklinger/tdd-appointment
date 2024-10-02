@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppointmentModule } from './appointment/appointment.module';
 import { PatientModule } from './patient/patient.module';
+import { PrismaPersistenceModule } from './shared/module/persistence/prisma/prisma-persistence.module';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { PatientModule } from './patient/patient.module';
       isGlobal: true,
       expandVariables: true,
     }),
+    PrismaPersistenceModule,
     PatientModule,
     AppointmentModule,
   ],

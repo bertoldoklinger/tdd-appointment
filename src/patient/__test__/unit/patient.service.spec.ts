@@ -6,6 +6,7 @@ import { PatientService } from 'src/patient/core/service/patient.service';
 import { PatientInMemoryRepository } from 'src/patient/persistence/repository/implementation/patient.in-memory.repository';
 import { PATIENT_REPOSITORY_TOKEN } from 'src/patient/persistence/repository/patient.repository.interface';
 import { providePatientRepository } from 'src/patient/persistence/repository/patient.repository.provider';
+import { PrismaPersistenceModule } from 'src/shared/module/persistence/prisma/prisma-persistence.module';
 import { makePatientFactory } from 'test/factory/make-patient';
 
 describe('PatientService', () => {
@@ -19,6 +20,7 @@ describe('PatientService', () => {
           isGlobal: true,
           load: [() => ({ DATABASE_DATASOURCE: 'MEMORY' })],
         }),
+        PrismaPersistenceModule
       ],
       providers: [PatientService, ...providePatientRepository()],
     }).compile();

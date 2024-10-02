@@ -5,6 +5,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { AppointmentService } from 'src/appointment/core/service/appointment.service';
 import { AppointmentController } from 'src/appointment/http/controller/appointment.controller';
 import { ScheduleAppointmentDTO } from 'src/appointment/http/dto/schedule-appointment.dto';
+import { PrismaPersistenceModule } from 'src/shared/module/persistence/prisma/prisma-persistence.module';
 
 describe('AppointmentController', () => {
   let sut: AppointmentController;
@@ -12,6 +13,7 @@ describe('AppointmentController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PrismaPersistenceModule],
       controllers: [AppointmentController],
       providers: [
         {

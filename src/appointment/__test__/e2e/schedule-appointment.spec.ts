@@ -14,6 +14,7 @@ import {
 } from 'src/patient/persistence/repository/patient.repository.interface';
 import { createNestApp } from 'test/test-e2e.setup';
 
+import { PrismaPersistenceModule } from 'src/shared/module/persistence/prisma/prisma-persistence.module';
 import request from 'supertest';
 
 const PATIENT_ID = 'PATIENT_ID';
@@ -29,8 +30,9 @@ describe('[E2E] Appointment', () => {
       //TODO inject prisma repository as a datasource
       ConfigModule.forRoot({
         isGlobal: true,
-        load: [() => ({ DATABASE_DATASOURCE: 'MEMORY' })],
+        load: [() => ({ DATABASE_DATASOURCE: 'PRISMA' })],
       }),
+      PrismaPersistenceModule,
       AppointmentModule,
       PatientModule,
     ]);
