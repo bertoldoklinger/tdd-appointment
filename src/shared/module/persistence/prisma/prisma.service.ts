@@ -26,17 +26,13 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    this.logger.log({
-      message: 'Connecting to Prisma on database module initialization',
-    });
+    this.logger.log('Connecting to Prisma on database module initialization');
 
     await this.$connect();
   }
 
   async onModuleDestroy() {
-    this.logger.log({
-      message: 'Disconnecting from Prisma on module destroy',
-    });
+    this.logger.log('Disconnecting from Prisma on module destroy');
 
     await this.$disconnect();
   }
