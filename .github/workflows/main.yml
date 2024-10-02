@@ -1,0 +1,74 @@
+name: CI
+
+on: push
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        ports:
+          - '5432:5432'
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until Postgres has started.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.11.0'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+      
+      - name: Install dotenv-cli
+        run: npm install -g dotenv-cli
+      
+      - name: Copy test environment variables
+        run: |
+          cp .env.test .env
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Code format
+        shell: bash
+        run: |
+          pnpm lint:check
+          pnpm format:check
+
+      - name: Setup modules databases
+        shell: bash
+        run: |
+          pnpm test:db:setup
+
+      - name: Test types
+        shell: bash
+        run: pnpm test:type
+
+      - name: Test unit
+        shell: bash
+        run: pnpm test:unit
+
+      # - name: Test integration
+      #   shell: bash
+      #   run: |
+      #     pnpm test:integration
+
+      - name: Test E2E
+        shell: bash
+        run: |
+          pnpm test:e2e
