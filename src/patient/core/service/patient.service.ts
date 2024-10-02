@@ -5,6 +5,7 @@ import {
   PatientRepository,
 } from 'src/patient/persistence/repository/patient.repository.interface';
 import { InvalidAgeError } from '../exception/invalid-age-error';
+import { PatientAlreadyExistsError } from '../exception/patient-already-exists-error';
 import { PatientInput, PatientModel } from '../model/patient.model';
 
 @Injectable()
@@ -21,7 +22,8 @@ export class PatientService {
       );
     const patient = PatientModel.create(patientInput);
     const patientExists = await this.doesPatientExists(patient.patientId);
-    if (patientExists) throw new Error('Patient Already Exists');
+    if (patientExists)
+      throw new PatientAlreadyExistsError('Patient Already Exists');
     await this.patientRepository.save(patient);
     return patient;
   }

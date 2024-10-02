@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigModule } from '@nestjs/config';
+import { randomUUID } from 'crypto';
 import { PatientInMemoryRepository } from 'src/patient/persistence/repository/implementation/patient.in-memory.repository';
 import { PATIENT_REPOSITORY_TOKEN } from 'src/patient/persistence/repository/patient.repository.interface';
 import { providePatientRepository } from 'src/patient/persistence/repository/patient.repository.provider';
@@ -31,9 +32,9 @@ describe('PatientService', () => {
     jest.clearAllMocks();
   });
 
-  // it('should be defined', () => {
-  //   expect(sut).toBeDefined();
-  // });
+  it('should be defined', () => {
+    expect(sut).toBeDefined();
+  });
 
   describe('register', () => {
     it('should return a new patient with given name', async () => {
@@ -48,40 +49,46 @@ describe('PatientService', () => {
         age: 18,
       });
     });
-    // it('should not register a patient if its age is less than 18 years', () => {
-    //   const invalidPatient = {
-    //     name: 'invalid_patient',
-    //     age: 17,
-    //   };
+    it('should not register a patient if its age is less than 18 years', () => {
+      const invalidPatient = {
+        name: 'invalid_patient',
+        age: 17,
+      };
 
-    //   expect(() => sut.register(invalidPatient)).toThrow(
-    //     'patient age must be equal or greather than 18 years',
-    //   );
-    // });
+      expect(async () => await sut.register(invalidPatient)).rejects.toThrow(
+        'patient age must be equal or greather than 18 years',
+      );
+    });
   });
-  // describe('doesPatientExist', () => {
-  //   it('should return false when no patient was registered', async () => {
-  //     const patientId = randomUUID();
+  describe('doesPatientExist', () => {
+    it('should return false when no patient was registered', async () => {
+      const patientId = randomUUID();
 
-  //     const patientAlreadyExists = await sut.doesPatientExists(patientId);
+      const patientAlreadyExists = await sut.doesPatientExists(patientId);
 
-  //     expect(patientAlreadyExists).toBe(false);
-  //   });
-  //   it('should return true when a patient is already registered', async () => {
-  //     const { patientId } = await sut.register({
-  //       name: 'Bertoldo Klinger',
-  //       age: 18,
-  //     });
+      expect(patientAlreadyExists).toBe(false);
+    });
+    it('should return true when a patient is already registered', async () => {
+      const { patientId } = await sut.register({
+        name: 'Bertoldo Klinger',
+        age: 18,
+      });
 
-  //     const patientAlreadyExists = await sut.doesPatientExists(patientId);
+      const patientAlreadyExists = await sut.doesPatientExists(patientId);
 
-  //     expect(patientAlreadyExists).toBe(true);
-  //   });
+      expect(patientAlreadyExists).toBe(true);
+    });
 
-  //   it('should return different ids when called twice with the same name', () => {
-  //     const firstPatient = sut.register({ name: 'Bertoldo Klinger', age: 18 });
-  //     const secondPatient = sut.register({ name: 'Bertoldo Klinger', age: 18 });
-  //     expect(firstPatient).not.toEqual(secondPatient);
-  //   });
-  // });
+    it('should return different ids when called twice with the same name', async () => {
+      const firstPatient = await sut.register({
+        name: 'Bertoldo Klinger',
+        age: 18,
+      });
+      const secondPatient = await sut.register({
+        name: 'Bertoldo Klinger',
+        age: 18,
+      });
+      expect(firstPatient).not.toEqual(secondPatient);
+    });
+  });
 });
