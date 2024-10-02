@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
 import {
   APPOINTMENT_REPOSITORY_TOKEN,
   AppointmentRepository,
 } from 'src/appointment/persistence/repository/appointment.repository.interface';
 
+import { PatientNotFoundException } from 'src/patient/core/exception';
 import { PatientService } from 'src/patient/core/service/patient.service';
 import { InvalidDateException } from '../exception/invalid-date.exception';
 
@@ -24,7 +25,7 @@ export class AppointmentService {
 
   public async scheduleAppointment(
     appointmentInput: AppointmentInput,
-  ): Promise<Appointment> {
+  ): Promise<AppointmentModel> {
     if (appointmentInput.endDate <= appointmentInput.startDate) {
       throw new InvalidDateException(
         "appointment's endTime should be after startTime",
@@ -47,10 +48,10 @@ export class AppointmentService {
     );
 
     if (!patientExists) {
-      throw new Error('Patient not found');
+      throw new PatientNotFoundException('Patient not found');
     }
 
-    const appointment = Appointment.create({
+    const appointment = AppointmentModel.create({
       startDate: appointmentInput.startDate,
       endDate: appointmentInput.endDate,
       patientId: appointmentInput.patientId,
@@ -61,12 +62,14 @@ export class AppointmentService {
     return appointment;
   }
 
-  public async confirmAppointment(appointment: Appointment) {
+  public async confirmAppointment(appointment: AppointmentModel) {
     if (appointment.confirmed === true)
       throw new Error('appointment already confirmed');
 
     const confirmedAppointment =
       await this.appointmentRepository.confirm(appointment);
+
+    if (!confirmedAppointment) throw new Error('appointment not found');
 
     return confirmedAppointment;
   }

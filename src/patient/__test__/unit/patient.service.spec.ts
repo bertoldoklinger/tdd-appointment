@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigModule } from '@nestjs/config';
 import { randomUUID } from 'crypto';
+import { PatientService } from 'src/patient/core/service/patient.service';
 import { PatientInMemoryRepository } from 'src/patient/persistence/repository/implementation/patient.in-memory.repository';
 import { PATIENT_REPOSITORY_TOKEN } from 'src/patient/persistence/repository/patient.repository.interface';
 import { providePatientRepository } from 'src/patient/persistence/repository/patient.repository.provider';
 import { makePatientFactory } from 'test/factory/make-patient';
-import { PatientService } from './patient.service';
 
 describe('PatientService', () => {
   let sut: PatientService;

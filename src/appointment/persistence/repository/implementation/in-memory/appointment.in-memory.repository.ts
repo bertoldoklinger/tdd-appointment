@@ -1,18 +1,25 @@
-import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
 import { AppointmentRepository } from '../../appointment.repository.interface';
 
 export class AppointmentInMemoryRepository implements AppointmentRepository {
-  public appointments: Appointment[] = [];
+  public appointments: AppointmentModel[] = [];
 
-  async save(appointment: Appointment): Promise<void> {
+  async save(appointment: AppointmentModel): Promise<void> {
     this.appointments.push(appointment);
   }
 
-  async confirm(appointment: Appointment): Promise<Appointment> {
+  async confirm(
+    appointment: AppointmentModel,
+  ): Promise<AppointmentModel | undefined> {
     const appointmentFound = this.appointments.find(
       (a) => appointment.appointmentId === a.appointmentId,
     );
+    if (!appointmentFound) return undefined;
     appointmentFound.confirmed = true;
     return appointmentFound;
+  }
+
+  async clear() {
+    this.appointments = [];
   }
 }

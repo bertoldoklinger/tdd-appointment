@@ -1,14 +1,18 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Post,
 } from '@nestjs/common';
 
-import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { InvalidDateException } from 'src/appointment/core/exception/invalid-date.exception';
+import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
 import { AppointmentService } from 'src/appointment/core/service/appointment.service';
+import { PatientNotFoundException } from 'src/patient/core/exception';
 import { ScheduleAppointmentDTO } from '../dto/schedule-appointment.dto';
 
 @Controller('appointment')
@@ -19,7 +23,7 @@ export class AppointmentController {
   @HttpCode(HttpStatus.CREATED)
   async scheduleAppointment(
     @Body() scheduleAppointmentDTO: ScheduleAppointmentDTO,
-  ): Promise<Appointment> {
+  ): Promise<AppointmentModel> {
     try {
       const appointment = await this.appointmentService.scheduleAppointment({
         ...scheduleAppointmentDTO,
@@ -28,6 +32,12 @@ export class AppointmentController {
       });
       return appointment;
     } catch (error: any) {
+      if (error instanceof PatientNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      if (error instanceof InvalidDateException) {
+        throw new BadRequestException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }

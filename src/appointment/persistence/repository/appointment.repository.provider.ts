@@ -1,15 +1,9 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Appointment } from '../typeorm/entity/appointment.entity';
+
+import { DataSource } from 'src/shared/database/enum/data-source.enum';
 import { APPOINTMENT_REPOSITORY_TOKEN } from './appointment.repository.interface';
 import { AppointmentInMemoryRepository } from './implementation/in-memory/appointment.in-memory.repository';
-
-enum DataSource {
-  TYPEORM = 'TYPEORM',
-  MEMORY = 'MEMORY',
-}
 
 export function provideAppointmentRepository(): Provider[] {
   return [
@@ -18,7 +12,7 @@ export function provideAppointmentRepository(): Provider[] {
       useFactory: (configService: ConfigService) => {
         const dataSource = configService.get<string>('DATABASE_DATASOURCE');
         switch (dataSource) {
-          case DataSource.TYPEORM:
+          case DataSource.PRISMA:
             return null;
           case DataSource.MEMORY:
           default:
@@ -29,13 +23,10 @@ export function provideAppointmentRepository(): Provider[] {
     },
   ];
 }
-export async function provideAppointmentRepositoryFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  dependenciesProvider: AppointmentRepoDependenciesProvider,
-) {
+export async function provideAppointmentRepositoryFactory() {
   await ConfigModule.envVariablesLoaded;
   switch (process.env.DATABASE_DATASOURCE) {
-    case DataSource.TYPEORM:
+    case DataSource.PRISMA:
       return null;
     case DataSource.MEMORY:
     default:
@@ -46,7 +37,7 @@ export async function provideAppointmentRepositoryFactory(
 @Injectable()
 export class AppointmentRepoDependenciesProvider {
   constructor(
-    @InjectRepository(Appointment)
-    public typeOrmRepository: Repository<Appointment>,
+    @Inject(APPOINTMENT_REPOSITORY_TOKEN)
+    public prismaAppointmentRepository: any,
   ) {}
 }

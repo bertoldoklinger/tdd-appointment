@@ -1,7 +1,8 @@
-import { Appointment } from 'src/appointment/core/model/appointment.model';
+import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
 
 export interface AppointmentRepository {
-  save(appointment: Appointment): Promise<void>;
-  confirm(appointment: Appointment): Promise<Appointment>;
+  save(appointment: AppointmentModel): Promise<void>;
+  confirm(appointment: AppointmentModel): Promise<AppointmentModel | undefined>;
+  clear(): Promise<void>;
 }
 export const APPOINTMENT_REPOSITORY_TOKEN = 'appointment-repository-token';

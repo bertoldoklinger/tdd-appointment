@@ -1,17 +1,9 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Inject, Injectable, Provider } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
-import { Patient } from '../typeorm/entity/patient.entity';
-
+import { DataSource } from 'src/shared/database/enum/data-source.enum';
 import { PatientInMemoryRepository } from './implementation/patient.in-memory.repository';
 import { PATIENT_REPOSITORY_TOKEN } from './patient.repository.interface';
-
-enum DataSource {
-  TYPEORM = 'TYPEORM',
-  MEMORY = 'MEMORY',
-}
 
 export function providePatientRepository(): Provider[] {
   return [
@@ -20,7 +12,7 @@ export function providePatientRepository(): Provider[] {
       useFactory: (configService: ConfigService) => {
         const dataSource = configService.get<string>('DATABASE_DATASOURCE');
         switch (dataSource) {
-          case DataSource.TYPEORM:
+          case DataSource.PRISMA:
             return null;
           case DataSource.MEMORY:
           default:
@@ -31,13 +23,10 @@ export function providePatientRepository(): Provider[] {
     },
   ];
 }
-export async function providePatientRepositoryFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  dependenciesProvider: PatientRepoDependenciesProvider,
-) {
+export async function providePatientRepositoryFactory() {
   await ConfigModule.envVariablesLoaded;
   switch (process.env.DATABASE_DATASOURCE) {
-    case DataSource.TYPEORM:
+    case DataSource.PRISMA:
       return null;
     case DataSource.MEMORY:
     default:
@@ -48,7 +37,7 @@ export async function providePatientRepositoryFactory(
 @Injectable()
 export class PatientRepoDependenciesProvider {
   constructor(
-    @InjectRepository(Patient)
-    public typeOrmRepository: Repository<Patient>,
+    @Inject(PATIENT_REPOSITORY_TOKEN)
+    public prismaPatientRepository: any,
   ) {}
 }

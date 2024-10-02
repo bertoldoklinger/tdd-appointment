@@ -8,7 +8,7 @@ import { provideAppointmentRepository } from './persistence/repository/appointme
 @Module({
   imports: [PatientModule],
   providers: [AppointmentService, ...provideAppointmentRepository()],
-  exports: [AppointmentService],
+  exports: [AppointmentService, ...provideAppointmentRepository()],
   controllers: [AppointmentController],
 })
 export class AppointmentModule {}

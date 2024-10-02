@@ -1,28 +1,28 @@
 import { randomUUID } from 'crypto';
 import { WithOptional } from 'src/shared/core/type/with-optional.type';
 
-export class Appointment {
+export class AppointmentModel {
   appointmentId: string;
   startDate: Date;
   endDate: Date;
   patientId: string;
   confirmed: boolean;
 
-  private constructor(data: Appointment) {
+  private constructor(data: AppointmentModel) {
     Object.assign(this, data);
   }
 
   static create(
-    data: WithOptional<Appointment, 'appointmentId' | 'confirmed'>,
-  ): Appointment {
-    return new Appointment({
+    data: WithOptional<AppointmentModel, 'appointmentId' | 'confirmed'>,
+  ): AppointmentModel {
+    return new AppointmentModel({
       ...data,
       confirmed: data.confirmed ?? false,
       appointmentId: data.appointmentId ?? randomUUID(),
     });
   }
 
-  static createFrom(data: Appointment): Appointment {
-    return new Appointment(data);
+  static createFrom(data: AppointmentModel): AppointmentModel {
+    return new AppointmentModel(data);
   }
 }
