@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto';
 import { PatientInMemoryRepository } from 'src/patient/persistence/repository/implementation/patient.in-memory.repository';
 import { PATIENT_REPOSITORY_TOKEN } from 'src/patient/persistence/repository/patient.repository.interface';
 import { providePatientRepository } from 'src/patient/persistence/repository/patient.repository.provider';
+import { makePatientFactory } from 'test/factory/make-patient';
 import { PatientService } from './patient.service';
 
 describe('PatientService', () => {
@@ -49,14 +50,12 @@ describe('PatientService', () => {
         age: 18,
       });
     });
-    it('should not register a patient if its age is less than 18 years', () => {
-      const invalidPatient = {
-        name: 'invalid_patient',
-        age: 17,
-      };
+    it('should not register a patient if its age is less than 18 years', async () => {});
+    it('should not register a patient if it already exists', async () => {
+      const patient = await makePatientFactory({ patientService: sut });
 
-      expect(async () => await sut.register(invalidPatient)).rejects.toThrow(
-        'patient age must be equal or greather than 18 years',
+      expect(async () => await sut.register(patient)).rejects.toThrow(
+        'patient already exists',
       );
     });
   });

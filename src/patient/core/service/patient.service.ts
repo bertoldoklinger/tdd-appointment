@@ -4,8 +4,10 @@ import {
   PATIENT_REPOSITORY_TOKEN,
   PatientRepository,
 } from 'src/patient/persistence/repository/patient.repository.interface';
-import { InvalidAgeError } from '../exception/invalid-age-error';
-import { PatientAlreadyExistsError } from '../exception/patient-already-exists-error';
+import {
+  InvalidAgeException,
+  PatientAlreadyExistsException,
+} from '../exception';
 import { PatientInput, PatientModel } from '../model/patient.model';
 
 @Injectable()
@@ -16,14 +18,15 @@ export class PatientService {
   ) {}
 
   public async register(patientInput: PatientInput): Promise<PatientModel> {
-    if (patientInput.age < 18)
-      throw new InvalidAgeError(
+    const patient = PatientModel.create(patientInput);
+    if (!patient) {
+      throw new InvalidAgeException(
         'patient age must be equal or greather than 18 years',
       );
-    const patient = PatientModel.create(patientInput);
+    }
     const patientExists = await this.doesPatientExists(patient.patientId);
     if (patientExists)
-      throw new PatientAlreadyExistsError('Patient Already Exists');
+      throw new PatientAlreadyExistsException('patient already exists');
     await this.patientRepository.save(patient);
     return patient;
   }

@@ -6,6 +6,7 @@ import {
 } from 'src/appointment/persistence/repository/appointment.repository.interface';
 
 import { PatientService } from 'src/patient/core/service/patient.service';
+import { InvalidDateException } from '../exception/invalid-date.exception';
 
 export type AppointmentInput = {
   startDate: Date;
@@ -25,7 +26,9 @@ export class AppointmentService {
     appointmentInput: AppointmentInput,
   ): Promise<Appointment> {
     if (appointmentInput.endDate <= appointmentInput.startDate) {
-      throw new Error("appointment's endTime should be after startTime");
+      throw new InvalidDateException(
+        "appointment's endTime should be after startTime",
+      );
     }
 
     if (
@@ -34,7 +37,7 @@ export class AppointmentService {
         appointmentInput.endDate,
       )
     ) {
-      throw new Error(
+      throw new InvalidDateException(
         "appointment's endTime should be in the same day as start time's",
       );
     }

@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { WithOptional } from 'src/shared/core/type/with-optional.type';
+import { InvalidAgeException } from '../exception';
 
 export type PatientInput = {
   name: string;
@@ -12,6 +13,10 @@ export class PatientModel {
   age: number;
 
   private constructor(data: PatientModel) {
+    if (data.age < 18)
+      throw new InvalidAgeException(
+        'patient age must be equal or greather than 18 years',
+      );
     Object.assign(this, data);
   }
 
