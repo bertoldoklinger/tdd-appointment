@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TestingModule } from '@nestjs/testing';
 import { AppointmentModule } from 'src/appointment/appointment.module';
 import {
@@ -28,10 +27,6 @@ describe('[INTEGRATION] Appointment', () => {
 
   beforeAll(async () => {
     const nestTestSetup = await createNestApp([
-      ConfigModule.forRoot({
-        isGlobal: true,
-        load: [() => ({ DATABASE_DATASOURCE: 'PRISMA' })],
-      }),
       PrismaPersistenceModule,
       AppointmentModule,
       PatientModule,
@@ -75,6 +70,28 @@ describe('[INTEGRATION] Appointment', () => {
       endDate,
       patientId,
       confirmed: false,
+    });
+  });
+  it('should confirm a appointment', async () => {
+    const startDate = new Date('2024-09-27T10:00:00Z');
+    const endDate = new Date('2024-09-27T11:00:00Z');
+    const { patientId } = await makePatientFactory({ patientService });
+    const newAppointment = await appointmentService.scheduleAppointment({
+      startDate,
+      endDate,
+      patientId,
+    });
+
+    const confirmedAppointment = await appointmentService.confirmAppointment(
+      newAppointment.appointmentId,
+    );
+
+    expect(confirmedAppointment).toEqual({
+      appointmentId: expect.any(String),
+      startDate,
+      endDate,
+      patientId,
+      confirmed: true,
     });
   });
 });
