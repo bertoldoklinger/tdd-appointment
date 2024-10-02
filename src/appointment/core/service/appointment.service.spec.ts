@@ -7,6 +7,26 @@ import { ConfigModule } from '@nestjs/config';
 import { provideAppointmentRepository } from 'src/appointment/persistence/repository/appointment.repository.provider';
 import { PatientModule } from 'src/patient/patient.module';
 
+type MakePatientFactoryParams = {
+  patientService: PatientService;
+  name?: string;
+  age?: number;
+};
+
+const AVERAGE_AGE = 25;
+const DEFAULT_NAME = 'John Doe';
+
+const makePatientFactory = async (params: MakePatientFactoryParams) => {
+  const { patientId } = await params.patientService.register({
+    name: params.name ?? DEFAULT_NAME,
+    age: params.age ?? AVERAGE_AGE,
+  });
+
+  return {
+    patientId,
+  };
+};
+
 describe('AppointmentService', () => {
   let sut: AppointmentService;
   let patientService: PatientService;
@@ -31,10 +51,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
 
-    const { patientId } = await patientService.register({
-      name: 'Bertoldo Klinger',
-      age: 18,
-    });
+    const { patientId } = await makePatientFactory({ patientService });
 
     const newAppointment = await sut.scheduleAppointment({
       startDate,
@@ -54,10 +71,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T09:00:00Z');
 
-    const { patientId } = await patientService.register({
-      name: 'John Doe',
-      age: 18,
-    });
+    const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
       sut.scheduleAppointment({
@@ -71,10 +85,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
 
-    const { patientId } = await patientService.register({
-      name: 'John Doe',
-      age: 18,
-    });
+    const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
       sut.scheduleAppointment({
@@ -102,10 +113,7 @@ describe('AppointmentService', () => {
     const startDate = new Date('2024-09-27T22:00:00Z');
     const endDate = new Date('2024-10-27T23:00:00Z');
 
-    const { patientId } = await patientService.register({
-      name: 'John Doe',
-      age: 18,
-    });
+    const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
       sut.scheduleAppointment({
@@ -142,5 +150,42 @@ describe('AppointmentService', () => {
         patientId: '1',
       }),
     ).rejects.toThrow('Patient not found');
+  });
+  it('should confirm a appointment when it is not confirmed', async () => {
+    const { patientId } = await makePatientFactory({ patientService });
+    const startDate = new Date('2024-09-27T09:00:00Z');
+    const endDate = new Date('2024-09-27T10:00:00Z');
+    const appointment = await sut.scheduleAppointment({
+      startDate,
+      endDate,
+      patientId,
+    });
+
+    const confirmedAppointment = await sut.confirmAppointment(appointment);
+
+    expect(confirmedAppointment).toEqual({
+      appointmentId: expect.any(String),
+      startDate: confirmedAppointment.startDate,
+      endDate: confirmedAppointment.endDate,
+      patientId,
+      confirmed: true,
+    });
+  });
+
+  it('should not confirm a appointment when it is already confirmed', async () => {
+    const { patientId } = await makePatientFactory({ patientService });
+    const startDate = new Date('2024-09-27T09:00:00Z');
+    const endDate = new Date('2024-09-27T10:00:00Z');
+    const appointment = await sut.scheduleAppointment({
+      startDate,
+      endDate,
+      patientId,
+    });
+
+    await sut.confirmAppointment(appointment);
+
+    expect(
+      async () => await sut.confirmAppointment(appointment),
+    ).rejects.toThrow('appointment already confirmed');
   });
 });

@@ -58,6 +58,16 @@ export class AppointmentService {
     return appointment;
   }
 
+  public async confirmAppointment(appointment: Appointment) {
+    if (appointment.confirmed === true)
+      throw new Error('appointment already confirmed');
+
+    const confirmedAppointment =
+      await this.appointmentRepository.confirm(appointment);
+
+    return confirmedAppointment;
+  }
+
   private isEndDateAfterAndInTheSameDayOfStartDate(
     startDate: Date,
     endDate: Date,

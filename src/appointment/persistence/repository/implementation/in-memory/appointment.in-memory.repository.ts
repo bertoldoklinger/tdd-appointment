@@ -7,4 +7,13 @@ export class AppointmentInMemoryRepository implements AppointmentRepository {
   async save(appointment: Appointment): Promise<void> {
     this.appointments.push(appointment);
   }
+
+  async confirm(appointment: Appointment): Promise<Appointment> {
+    const appointmentFound = this.appointments.find(
+      (apppointmentDb) =>
+        appointment.appointmentId === apppointmentDb.appointmentId,
+    );
+    appointmentFound.confirmed = true;
+    return appointmentFound;
+  }
 }
