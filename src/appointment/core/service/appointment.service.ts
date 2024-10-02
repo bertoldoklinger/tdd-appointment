@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
 import {
   APPOINTMENT_REPOSITORY_TOKEN,
@@ -66,10 +71,10 @@ export class AppointmentService {
     const appointment =
       await this.appointmentRepository.findOneById(appointmentId);
 
-    if (!appointment) throw new Error('appointment not found');
+    if (!appointment) throw new NotFoundException('appointment not found');
 
     if (appointment.confirmed === true)
-      throw new Error('appointment already confirmed');
+      throw new BadRequestException('appointment already confirmed');
 
     const confirmedAppointment =
       await this.appointmentRepository.confirm(appointment);

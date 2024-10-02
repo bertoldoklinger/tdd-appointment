@@ -52,6 +52,12 @@ export class AppointmentController {
         await this.appointmentService.confirmAppointment(appointmentId);
       return confirmedAppointment;
     } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
