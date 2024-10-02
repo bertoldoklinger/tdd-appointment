@@ -6,6 +6,6 @@ import { providePatientRepository } from './persistence/repository/patient.repos
 @Module({
   providers: [PatientService, ...providePatientRepository()],
   controllers: [PatientController],
-  exports: [PatientService],
+  exports: [PatientService, ...providePatientRepository()],
 })
 export class PatientModule {}
