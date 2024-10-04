@@ -50,16 +50,20 @@ export class AppointmentPrismaRepository
   async confirm(
     appointment: AppointmentModel,
   ): Promise<AppointmentModel | undefined> {
-    const confirmedAppointment = await this.model.update({
-      where: {
-        appointmentId: appointment.appointmentId,
-      },
-      data: {
-        confirmed: true,
-      },
-    });
-    if (!confirmedAppointment) return undefined;
-    return confirmedAppointment;
+    try {
+      const confirmedAppointment = await this.model.update({
+        where: {
+          appointmentId: appointment.appointmentId,
+        },
+        data: {
+          confirmed: true,
+        },
+      });
+      if (!confirmedAppointment) return undefined;
+      return confirmedAppointment;
+    } catch (error) {
+      this.handleAndThrowError(error);
+    }
   }
 
   async clear(): Promise<void> {
