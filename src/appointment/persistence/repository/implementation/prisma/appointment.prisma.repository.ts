@@ -47,9 +47,7 @@ export class AppointmentPrismaRepository
     }
   }
 
-  async confirm(
-    appointment: AppointmentModel,
-  ): Promise<AppointmentModel | undefined> {
+  async confirm(appointment: AppointmentModel): Promise<AppointmentModel> {
     try {
       const confirmedAppointment = await this.model.update({
         where: {
@@ -59,8 +57,8 @@ export class AppointmentPrismaRepository
           confirmed: true,
         },
       });
-      if (!confirmedAppointment) return undefined;
-      return confirmedAppointment;
+
+      return AppointmentModel.createFrom(confirmedAppointment);
     } catch (error) {
       this.handleAndThrowError(error);
     }

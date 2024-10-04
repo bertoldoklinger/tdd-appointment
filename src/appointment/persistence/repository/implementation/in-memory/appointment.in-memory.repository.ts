@@ -1,4 +1,5 @@
 import { AppointmentModel } from 'src/appointment/core/model/appointment.model';
+import { PersistenceClientException } from 'src/shared/core/exception/storage.exception';
 import { AppointmentRepository } from '../../appointment.repository.interface';
 
 export class AppointmentInMemoryRepository implements AppointmentRepository {
@@ -18,11 +19,12 @@ export class AppointmentInMemoryRepository implements AppointmentRepository {
     return appointmentFound;
   }
 
-  async confirm(
-    appointment: AppointmentModel,
-  ): Promise<AppointmentModel | undefined> {
-    const appointmentFound = await this.findOneById(appointment.appointmentId);
-    if (!appointmentFound) return undefined;
+  async confirm(appointment: AppointmentModel): Promise<AppointmentModel> {
+    const appointmentFound = this.appointments.find(
+      (a) => appointment.appointmentId === a.appointmentId,
+    );
+    if (!appointmentFound)
+      throw new PersistenceClientException('appointment not found');
     appointmentFound.confirmed = true;
     return appointmentFound;
   }
