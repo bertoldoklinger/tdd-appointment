@@ -55,7 +55,6 @@ describe('[INTEGRATION] Appointment', () => {
   it('should schedule an unconfirmed appointment for a user on success', async () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
-
     const { patientId } = await makePatientFactory({ patientService });
 
     const newAppointment = await appointmentService.scheduleAppointment({

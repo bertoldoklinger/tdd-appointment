@@ -52,7 +52,6 @@ describe('PatientService', () => {
         age: 18,
       });
     });
-    it('should not register a patient if its age is less than 18 years', async () => {});
     it('should not register a patient if it already exists', async () => {
       const patient = await makePatientFactory({ patientService: sut });
 
@@ -85,10 +84,12 @@ describe('PatientService', () => {
         name: 'Bertoldo Klinger',
         age: 18,
       });
+
       const secondPatient = await sut.register({
         name: 'Bertoldo Klinger',
         age: 18,
       });
+
       expect(firstPatient).not.toEqual(secondPatient);
     });
   });

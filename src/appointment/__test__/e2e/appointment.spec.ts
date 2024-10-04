@@ -65,6 +65,7 @@ describe('[E2E] Appointment', () => {
         age: 25,
       });
       await patientRepository.save(patient);
+
       const res = await request(app.getHttpServer())
         .post('/appointment/schedule')
         .send({
@@ -72,6 +73,7 @@ describe('[E2E] Appointment', () => {
           endDate: new Date('2024-09-27T11:00:00Z'),
           patientId: PATIENT_ID,
         });
+
       expect(res.status).toBe(HttpStatus.CREATED);
       expect(res.body).toEqual({
         appointmentId: expect.any(String),

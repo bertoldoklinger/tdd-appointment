@@ -34,7 +34,6 @@ describe('AppointmentService', () => {
   it('should schedule an unconfirmed appointment for a user on success', async () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T11:00:00Z');
-
     const { patientId } = await makePatientFactory({ patientService });
 
     const newAppointment = await sut.scheduleAppointment({
@@ -54,7 +53,6 @@ describe('AppointmentService', () => {
   it('end time should not be before the start time on a appointment', async () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T09:00:00Z');
-
     const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
@@ -68,7 +66,6 @@ describe('AppointmentService', () => {
   it('end time should be after the start time', async () => {
     const startDate = new Date('2024-09-27T10:00:00Z');
     const endDate = new Date('2024-09-27T10:00:00Z');
-
     const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
@@ -96,7 +93,6 @@ describe('AppointmentService', () => {
   it('should throw an error when end time is in same day and hour of next month', async () => {
     const startDate = new Date('2024-09-27T22:00:00Z');
     const endDate = new Date('2024-10-27T23:00:00Z');
-
     const { patientId } = await makePatientFactory({ patientService });
 
     expect(() =>
