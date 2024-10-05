@@ -56,15 +56,15 @@ export class AppointmentService {
       throw new PatientNotFoundException('Patient not found');
     }
 
-    const appointment = AppointmentModel.create({
+    const newAppointment = AppointmentModel.create({
       startDate: appointmentInput.startDate,
       endDate: appointmentInput.endDate,
       patientId: appointmentInput.patientId,
     });
 
-    await this.appointmentRepository.save(appointment);
+    await this.appointmentRepository.save(newAppointment);
 
-    return appointment;
+    return newAppointment;
   }
 
   public async confirmAppointment(appointmentId: string) {
